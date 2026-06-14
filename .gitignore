@@ -1,0 +1,19 @@
+# LocalStack files
+.localstack/
+
+# Terraform files
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+
+# Override files
+*.tfvars
+*.tfvars.json
+*.override.tf
+*.override.tf.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
