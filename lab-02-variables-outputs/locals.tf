@@ -5,8 +5,9 @@ locals {
 
   # Common tags to apply to all resources
   common_tags = {
-    Environment = var.environment
+    Environment = title(var.environment)
     ManagedBy   = "Terraform"
     Project     = "LocalStackLearning"
+    Service     = "LocalStackLearning"
   }
 }

@@ -54,7 +54,7 @@ This lab demonstrates how resources depend on each other and how Terraform build
    aws --endpoint-url=http://localhost:4566 s3 cp sample.json s3://learning-upload-bucket/sample.json
 
    # Read messages from the SQS queue
-   aws --endpoint-url=http://localhost:4566 sqs receive-message --queue-url http://localhost:4566/000000000000/s3-upload-notification-queue
+   aws --endpoint-url=http://localhost:4566 sqs receive-message --queue-url http://sqs.ap-south-1.localhost.localstack.cloud:4566/000000000000/s3-upload-notification-queue
    ```
    *(You should see a message containing the S3 event notification JSON!)*
 
