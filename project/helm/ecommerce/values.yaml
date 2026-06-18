@@ -33,7 +33,7 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
   hosts:
-    - host: localhost
+    - host: ""
       paths:
         - path: /(.*)
           pathType: ImplementationSpecific

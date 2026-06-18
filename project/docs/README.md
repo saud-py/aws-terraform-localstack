@@ -103,15 +103,15 @@ aws --endpoint-url=http://localhost:4566 s3 ls s3://dev-ecommerce-invoices/invoi
 ## 4. API Gateway & Logging Integration
 
 ### Querying via API Gateway
-API Gateway (HTTP API v2) routes traffic into Minikube. 
-1. Get the HTTP API Gateway URL endpoint:
+API Gateway (REST API v1) routes traffic into Minikube. 
+1. Get the REST API Gateway ID:
    ```bash
-   aws --endpoint-url=http://localhost:4566 apigatewayv2 get-apis --region us-east-1
+   aws --endpoint-url=http://localhost:4566 apigateway get-rest-apis --region us-east-1
    ```
-   *(Locate the `ApiEndpoint` value, e.g., `http://<api-id>.execute-api.localhost.localstack.cloud:4566`)*
-2. Submit a request using the API Gateway endpoint directly:
+   *(Locate the `id` value of your API)*
+2. Submit a request using the API Gateway URL directly:
    ```bash
-   curl -X POST <ApiEndpoint>/orders -H "Content-Type: application/json" -d '{"amount": 250.00}'
+   curl -X POST http://localhost:4566/restapis/jkdcyrvxry/dev/_user_request_/orders -H "Content-Type: application/json" -d '{"amount": 250.00}'
    ```
    *(API Gateway will proxy the request directly into the frontend/api routes inside your cluster!)*
 
@@ -122,3 +122,25 @@ When the `invoice-processor` Lambda executes, its logs are pushed to CloudWatch 
    curl -G -s "http://localhost:3100/loki/api/v1/query_range" --data-urlencode 'query={job="aws-cloudwatch"}' | jq
    ```
    *(You will see the decompressed Lambda logs streamed in real-time to your Loki server!)*
+
+---
+
+## 5. Grafana & Prometheus Monitoring
+
+We can deploy Grafana and Prometheus directly through ArgoCD:
+
+### Deploying Grafana & Prometheus
+1. Apply the monitoring application manifest:
+   ```bash
+   kubectl apply -f project/applications/monitoring.yaml
+   ```
+2. Wait for the pods in the cluster to initialize.
+
+### Accessing the Grafana Dashboard
+1. Ensure your `minikube tunnel` is active.
+2. Open your web browser and navigate to:
+   `http://localhost/grafana/`
+3. Log in with the default administrator credentials:
+   - **Username**: `admin`
+   - **Password**: `admin`
+4. Under **Connections -> Data Sources**, you can add **Loki** (`http://localhost:3100`) and **Prometheus** to explore and visualize all metrics and logs on unified dashboards!
