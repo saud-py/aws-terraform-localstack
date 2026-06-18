@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ecommerce-platform
+  namespace: argocd
+spec:
+  project: default
+  source:
+    # IMPORTANT: Update this to point to your actual Git repository URL (e.g. GitHub fork)
+    repoURL: 'https://github.com/saud-py/aws-terraform-localstack.git'
+    targetRevision: basics-using-localstack
+    path: project/helm/ecommerce
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

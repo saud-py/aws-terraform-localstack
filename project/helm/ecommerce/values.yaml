@@ -1,0 +1,45 @@
+# E-Commerce Platform values
+
+environment:
+  envName: "production-like"
+  # DNS route inside Minikube to access LocalStack running on host machine
+  awsEndpoint: "http://host.minikube.internal:4566"
+  awsRegion: "us-east-1"
+
+api:
+  replicas: 1
+  image:
+    repository: "node"
+    tag: "18-alpine"
+    pullPolicy: "IfNotPresent"
+
+worker:
+  replicas: 1
+  image:
+    repository: "node"
+    tag: "18-alpine"
+    pullPolicy: "IfNotPresent"
+
+frontend:
+  replicas: 1
+  image:
+    repository: "nginx"
+    tag: "alpine"
+    pullPolicy: "IfNotPresent"
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  hosts:
+    - host: localhost
+      paths:
+        - path: /(.*)
+          pathType: ImplementationSpecific
+          backendService: frontend
+          backendPort: 80
+        - path: /api/(.*)
+          pathType: ImplementationSpecific
+          backendService: api
+          backendPort: 3000
