@@ -35,11 +35,11 @@ ingress:
   hosts:
     - host: ""
       paths:
-        - path: /api/(.*)
+        - path: ~/api/(.*)
           pathType: ImplementationSpecific
           backendService: api
           backendPort: 3000
-        - path: /(.*)
+        - path: ~/(.*)
           pathType: ImplementationSpecific
           backendService: frontend
           backendPort: 80
