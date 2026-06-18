@@ -31,15 +31,15 @@ ingress:
   enabled: true
   className: "nginx"
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
   hosts:
     - host: ""
       paths:
-        - path: /api/(.*)
+        - path: /api(/|$)(.*)
           pathType: ImplementationSpecific
           backendService: api
           backendPort: 3000
-        - path: /(.*)
+        - path: /()(.*)
           pathType: ImplementationSpecific
           backendService: frontend
           backendPort: 80
