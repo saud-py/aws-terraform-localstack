@@ -203,7 +203,7 @@ resource "aws_api_gateway_integration" "proxy" {
   http_method             = aws_api_gateway_method.proxy.http_method
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
-  uri                     = "http://host.docker.internal:8085/api/{proxy}"
+  uri                     = "http://192.168.65.254:8085/api/{proxy}"
 }
 
 resource "aws_api_gateway_method" "root" {
@@ -219,7 +219,7 @@ resource "aws_api_gateway_integration" "root" {
   http_method             = aws_api_gateway_method.root.http_method
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
-  uri                     = "http://host.docker.internal:8085/api/"
+  uri                     = "http://192.168.65.254:8085/api/"
 }
 
 resource "aws_api_gateway_deployment" "deployment" {
@@ -230,8 +230,10 @@ resource "aws_api_gateway_deployment" "deployment" {
       aws_api_gateway_resource.proxy.id,
       aws_api_gateway_method.proxy.id,
       aws_api_gateway_integration.proxy.id,
+      aws_api_gateway_integration.proxy.uri,
       aws_api_gateway_method.root.id,
       aws_api_gateway_integration.root.id,
+      aws_api_gateway_integration.root.uri,
     ]))
   }
 
