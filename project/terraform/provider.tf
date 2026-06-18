@@ -30,5 +30,8 @@ provider "aws" {
     iam            = "http://localhost:4566"
     sts            = "http://localhost:4566"
     cloudwatch     = "http://localhost:4566"
+    logs           = "http://localhost:4566"
+    apigateway     = "http://localhost:4566"
+    apigatewayv2   = "http://localhost:4566"
   }
 }
