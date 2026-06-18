@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "myapp.fullname" . }}-backend
+  labels:
+    {{- include "myapp.labels" . | nindent 4 }}
+    app: backend
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      {{- include "myapp.selectorLabels" . | nindent 6 }}
+      app: backend
+  template:
+    metadata:
+      labels:
+        {{- include "myapp.selectorLabels" . | nindent 8 }}
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+        imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+        args:
+        - "-text=Backend Echo Service (Helm). Env: $(ENV_NAME), Redis Host: $(REDIS_HOST), DB Password: $(DB_PASS)"
+        ports:
+        - containerPort: 5678
+        env:
+        - name: ENV_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "myapp.fullname" . }}-backend-config
+              key: APP_ENV
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "myapp.fullname" . }}-backend-config
+              key: REDIS_HOST
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "myapp.fullname" . }}-backend-secret
+              key: DB_PASSWORD
+        resources:
+          {{- toYaml .Values.backend.resources | nindent 10 }}

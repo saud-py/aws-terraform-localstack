@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp
+  namespace: argocd
+spec:
+  project: default
+  source:
+    # IMPORTANT: Update this to point to your actual Git repository URL (e.g. GitHub fork)
+    repoURL: 'https://github.com/saud-py/aws-terraform-localstack.git'
+    targetRevision: HEAD
+    path: lab-06-helm/helm-charts/myapp
+    helm:
+      valueFiles:
+        - ../../../lab-07-argocd/gitops/myapp-values/values-dev.yaml
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
