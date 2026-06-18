@@ -117,6 +117,12 @@ data:
           <h3 id="result-title">Order Submitted!</h3>
           <pre id="result-data"></pre>
         </div>
+
+        <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2.0rem;">
+          <h3 style="color: #818cf8; font-size: 1.1rem; margin-bottom: 1rem; text-align: left;">Transaction Ledger</h3>
+          <button onclick="fetchTransactions()" style="background: transparent; border: 1px solid #818cf8; color: #818cf8; margin-bottom: 1rem; padding: 0.5rem 1rem;">Refresh Ledger</button>
+          <div id="tx-list" style="text-align: left; font-size: 0.9rem; color: #94a3b8; overflow-x: auto;">Click Refresh to load ledger entries...</div>
+        </div>
       </div>
 
       <script>
@@ -146,6 +152,9 @@ data:
               resultTitle.innerText = "Order Created (PENDING)";
               resultTitle.style.color = "#10b981";
               resultData.innerText = JSON.stringify(data, null, 2);
+              
+              // Auto refresh ledger after placing order
+              setTimeout(fetchTransactions, 3000);
             } else {
               throw new Error(data.error || 'Server error');
             }
@@ -153,6 +162,29 @@ data:
             resultTitle.innerText = "Failed to Place Order";
             resultTitle.style.color = "#ef4444";
             resultData.innerText = err.message;
+          }
+        }
+
+        async function fetchTransactions() {
+          const listDiv = document.getElementById('tx-list');
+          listDiv.innerText = "Loading transactions...";
+          try {
+            const response = await fetch('/api/transactions');
+            const data = await response.json();
+            if (data.length === 0) {
+              listDiv.innerText = "No transaction entries found.";
+              return;
+            }
+            let html = '<table style="width:100%; border-collapse: collapse; margin-top:0.5rem;">';
+            html += '<thead><tr style="border-bottom:1px solid #334155; color:#94a3b8; font-size:0.8rem;"><th style="padding:0.5rem 0; text-align:left;">TX ID</th><th style="padding:0.5rem 0; text-align:left;">STATUS</th><th style="padding:0.5rem 0; text-align:right;">AMOUNT</th></tr></thead><tbody>';
+            data.forEach(tx => {
+              const statusColor = tx.status === 'SUCCESS' ? '#10b981' : '#f59e0b';
+              html += `<tr style="border-bottom:1px solid #1e293b;"><td style="padding:0.5rem 0; font-family:monospace;">${tx.transaction_id}</td><td style="padding:0.5rem 0; color:${statusColor}; font-weight:600; font-size:0.8rem;">${tx.status}</td><td style="padding:0.5rem 0; text-align:right;">$${tx.amount.toFixed(2)}</td></tr>`;
+            });
+            html += '</tbody></table>';
+            listDiv.innerHTML = html;
+          } catch (err) {
+            listDiv.innerText = "Failed to load: " + err.message;
           }
         }
       </script>

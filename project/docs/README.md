@@ -88,9 +88,37 @@ Confirm the worker successfully uploaded the invoice JSON:
 aws --endpoint-url=http://localhost:4566 s3 ls s3://dev-ecommerce-invoices/invoices/ --region us-east-1
 ```
 
-### Step 4: Verify Order Completion (Lambda Triggered)
-Run a DynamoDB scan to see if the order status was automatically updated to `COMPLETED` by the Lambda function:
-```bash
-aws --endpoint-url=http://localhost:4566 dynamodb scan --table-name dev-ecommerce-orders --region us-east-1
-```
-*(You will see the status change from `PENDING` to `COMPLETED`!)*
+### Step 4: Verify Order Completion & Transactions (Lambda Triggered)
+1. Run a DynamoDB scan to see if the order status was automatically updated to `COMPLETED` by the Lambda function:
+   ```bash
+   aws --endpoint-url=http://localhost:4566 dynamodb scan --table-name dev-ecommerce-orders --region us-east-1
+   ```
+2. Scan the transactions table to verify the corresponding transaction status was updated to `SUCCESS`:
+   ```bash
+   aws --endpoint-url=http://localhost:4566 dynamodb scan --table-name dev-ecommerce-transactions --region us-east-1
+   ```
+
+---
+
+## 4. API Gateway & Logging Integration
+
+### Querying via API Gateway
+API Gateway (HTTP API v2) routes traffic into Minikube. 
+1. Get the HTTP API Gateway URL endpoint:
+   ```bash
+   aws --endpoint-url=http://localhost:4566 apigatewayv2 get-apis --region us-east-1
+   ```
+   *(Locate the `ApiEndpoint` value, e.g., `http://<api-id>.execute-api.localhost.localstack.cloud:4566`)*
+2. Submit a request using the API Gateway endpoint directly:
+   ```bash
+   curl -X POST <ApiEndpoint>/orders -H "Content-Type: application/json" -d '{"amount": 250.00}'
+   ```
+   *(API Gateway will proxy the request directly into the frontend/api routes inside your cluster!)*
+
+### Verifying CloudWatch to Loki Log Pipeline
+When the `invoice-processor` Lambda executes, its logs are pushed to CloudWatch Log Groups. A subscription filter sends those logs to the `loki-log-shipper` Lambda, which POSTs them into Loki.
+1. Query Grafana Loki (from the Grafana console or using Loki API):
+   ```bash
+   curl -G -s "http://localhost:3100/loki/api/v1/query_range" --data-urlencode 'query={job="aws-cloudwatch"}' | jq
+   ```
+   *(You will see the decompressed Lambda logs streamed in real-time to your Loki server!)*
