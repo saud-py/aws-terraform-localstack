@@ -156,7 +156,7 @@ resource "aws_lambda_function" "loki_shipper" {
 
   environment {
     variables = {
-      LOKI_ENDPOINT = "http://host.minikube.internal:3100/loki/api/v1/push"
+      LOKI_ENDPOINT = "http://192.168.65.254:3100/loki/api/v1/push"
     }
   }
 }
@@ -195,6 +195,9 @@ resource "aws_api_gateway_method" "proxy" {
   resource_id   = aws_api_gateway_resource.proxy.id
   http_method   = "ANY"
   authorization = "NONE"
+  request_parameters = {
+    "method.request.path.proxy" = true
+  }
 }
 
 resource "aws_api_gateway_integration" "proxy" {
@@ -204,6 +207,9 @@ resource "aws_api_gateway_integration" "proxy" {
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
   uri                     = "http://192.168.65.254:8085/api/{proxy}"
+  request_parameters = {
+    "integration.request.path.proxy" = "method.request.path.proxy"
+  }
 }
 
 resource "aws_api_gateway_method" "root" {
@@ -229,8 +235,10 @@ resource "aws_api_gateway_deployment" "deployment" {
     redeployment = sha1(jsonencode([
       aws_api_gateway_resource.proxy.id,
       aws_api_gateway_method.proxy.id,
+      aws_api_gateway_method.proxy.request_parameters,
       aws_api_gateway_integration.proxy.id,
       aws_api_gateway_integration.proxy.uri,
+      aws_api_gateway_integration.proxy.request_parameters,
       aws_api_gateway_method.root.id,
       aws_api_gateway_integration.root.id,
       aws_api_gateway_integration.root.uri,
