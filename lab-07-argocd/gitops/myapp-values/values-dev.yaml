@@ -1,0 +1,10 @@
+# Dev overrides for myapp deployed via ArgoCD
+environment:
+  envName: "gitops-dev"
+
+backend:
+  replicas: 2 # Scale up backend to 2 replicas in dev env
+  dbPassword: "secure-password-from-gitops-manifest"
+
+frontend:
+  replicas: 1

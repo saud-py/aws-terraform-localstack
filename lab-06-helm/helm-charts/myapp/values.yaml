@@ -1,0 +1,64 @@
+# Default values for myapp.
+
+environment:
+  envName: "local-dev"
+
+redis:
+  image:
+    repository: "redis"
+    tag: "7-alpine"
+    pullPolicy: "IfNotPresent"
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "128Mi"
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
+
+backend:
+  replicas: 1
+  image:
+    repository: "hashicorp/http-echo"
+    tag: "latest"
+    pullPolicy: "IfNotPresent"
+  dbPassword: "super-secure-local-password-from-helm"
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "128Mi"
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
+
+frontend:
+  replicas: 1
+  image:
+    repository: "nginx"
+    tag: "alpine"
+    pullPolicy: "IfNotPresent"
+  gitRepo: "https://github.com/octocat/Spoon-Knife.git"
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "128Mi"
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  hosts:
+    - host: localhost
+      paths:
+        - path: /(.*)
+          pathType: ImplementationSpecific
+          backendService: frontend
+          backendPort: 80
+        - path: /api/(.*)
+          pathType: ImplementationSpecific
+          backendService: backend
+          backendPort: 8080
