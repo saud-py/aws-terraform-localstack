@@ -78,19 +78,19 @@ curl -X POST http://localhost/api/orders -H "Content-Type: application/json" -d 
 ### Step 2: Verify SQS Message Queue
 To verify the message was published to SQS and read by the worker, run:
 ```bash
-aws --endpoint-url=http://localhost:4566 sqs receive-message --queue-url http://localhost:4566/000000000000/dev-process-order-queue
+aws --endpoint-url=http://localhost:4566 sqs receive-message --queue-url http://localhost:4566/000000000000/dev-process-order-queue --region us-east-1
 ```
 *(It should show empty if the worker has already polled and processed it.)*
 
 ### Step 3: Verify S3 Invoice Storage
 Confirm the worker successfully uploaded the invoice JSON:
 ```bash
-aws --endpoint-url=http://localhost:4566 s3 ls s3://dev-ecommerce-invoices/invoices/
+aws --endpoint-url=http://localhost:4566 s3 ls s3://dev-ecommerce-invoices/invoices/ --region us-east-1
 ```
 
 ### Step 4: Verify Order Completion (Lambda Triggered)
 Run a DynamoDB scan to see if the order status was automatically updated to `COMPLETED` by the Lambda function:
 ```bash
-aws --endpoint-url=http://localhost:4566 dynamodb scan --table-name dev-ecommerce-orders
+aws --endpoint-url=http://localhost:4566 dynamodb scan --table-name dev-ecommerce-orders --region us-east-1
 ```
 *(You will see the status change from `PENDING` to `COMPLETED`!)*
