@@ -1,4 +1,4 @@
-cd# Lab 07: GitOps with ArgoCD
+# Lab 07: GitOps with ArgoCD
 
 This lab introduces **GitOps**, a modern software deployment methodology where Git is used as the single source of truth for declarative infrastructure and applications. We will use **ArgoCD**, a GitOps agent running on Kubernetes, to automatically sync changes from this Git repository into your Minikube cluster.
 

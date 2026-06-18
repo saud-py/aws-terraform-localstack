@@ -8,7 +8,7 @@ spec:
   source:
     # IMPORTANT: Update this to point to your actual Git repository URL (e.g. GitHub fork)
     repoURL: 'https://github.com/saud-py/aws-terraform-localstack.git'
-    targetRevision: HEAD
+    targetRevision: basics-using-localstack
     path: lab-06-helm/helm-charts/myapp
     helm:
       valueFiles:
