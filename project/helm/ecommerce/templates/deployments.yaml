@@ -264,7 +264,7 @@ spec:
         - -c
         - |
           mkdir -p /app && cp /code/worker.js /app/worker.js && cd /app
-          npm install @aws-sdk/client-sqs @aws-sdk/client-s3
+          npm install @aws-sdk/client-sqs @aws-sdk/client-s3 @aws-sdk/client-dynamodb
           node worker.js
         env:
         - name: AWS_ENDPOINT
