@@ -78,19 +78,69 @@ curl -X POST http://localhost/api/orders -H "Content-Type: application/json" -d 
 ### Step 2: Verify SQS Message Queue
 To verify the message was published to SQS and read by the worker, run:
 ```bash
-aws --endpoint-url=http://localhost:4566 sqs receive-message --queue-url http://localhost:4566/000000000000/dev-process-order-queue
+aws --endpoint-url=http://localhost:4566 sqs receive-message --queue-url http://localhost:4566/000000000000/dev-process-order-queue --region us-east-1
 ```
 *(It should show empty if the worker has already polled and processed it.)*
 
 ### Step 3: Verify S3 Invoice Storage
 Confirm the worker successfully uploaded the invoice JSON:
 ```bash
-aws --endpoint-url=http://localhost:4566 s3 ls s3://dev-ecommerce-invoices/invoices/
+aws --endpoint-url=http://localhost:4566 s3 ls s3://dev-ecommerce-invoices/invoices/ --region us-east-1
 ```
 
-### Step 4: Verify Order Completion (Lambda Triggered)
-Run a DynamoDB scan to see if the order status was automatically updated to `COMPLETED` by the Lambda function:
-```bash
-aws --endpoint-url=http://localhost:4566 dynamodb scan --table-name dev-ecommerce-orders
-```
-*(You will see the status change from `PENDING` to `COMPLETED`!)*
+### Step 4: Verify Order Completion & Transactions (Lambda Triggered)
+1. Run a DynamoDB scan to see if the order status was automatically updated to `COMPLETED` by the Lambda function:
+   ```bash
+   aws --endpoint-url=http://localhost:4566 dynamodb scan --table-name dev-ecommerce-orders --region us-east-1
+   ```
+2. Scan the transactions table to verify the corresponding transaction status was updated to `SUCCESS`:
+   ```bash
+   aws --endpoint-url=http://localhost:4566 dynamodb scan --table-name dev-ecommerce-transactions --region us-east-1
+   ```
+
+---
+
+## 4. API Gateway & Logging Integration
+
+### Querying via API Gateway
+API Gateway (REST API v1) routes traffic into Minikube. 
+1. Get the REST API Gateway ID:
+   ```bash
+   aws --endpoint-url=http://localhost:4566 apigateway get-rest-apis --region us-east-1
+   ```
+   *(Locate the `id` value of your API)*
+2. Submit a request using the API Gateway URL directly:
+   ```bash
+   curl -X POST http://localhost:4566/restapis/jkdcyrvxry/dev/_user_request_/orders -H "Content-Type: application/json" -d '{"amount": 250.00}'
+   ```
+   *(API Gateway will proxy the request directly into the frontend/api routes inside your cluster!)*
+
+### Verifying CloudWatch to Loki Log Pipeline
+When the `invoice-processor` Lambda executes, its logs are pushed to CloudWatch Log Groups. A subscription filter sends those logs to the `loki-log-shipper` Lambda, which POSTs them into Loki.
+1. Query Grafana Loki (from the Grafana console or using Loki API):
+   ```bash
+   curl -G -s "http://localhost:3100/loki/api/v1/query_range" --data-urlencode 'query={job="aws-cloudwatch"}' | jq
+   ```
+   *(You will see the decompressed Lambda logs streamed in real-time to your Loki server!)*
+
+---
+
+## 5. Grafana & Prometheus Monitoring
+
+We can deploy Grafana and Prometheus directly through ArgoCD:
+
+### Deploying Grafana & Prometheus
+1. Apply the monitoring application manifest:
+   ```bash
+   kubectl apply -f project/applications/monitoring.yaml
+   ```
+2. Wait for the pods in the cluster to initialize.
+
+### Accessing the Grafana Dashboard
+1. Ensure your `minikube tunnel` is active.
+2. Open your web browser and navigate to:
+   `http://localhost/grafana/`
+3. Log in with the default administrator credentials:
+   - **Username**: `admin`
+   - **Password**: `admin`
+4. Under **Connections -> Data Sources**, you can add **Loki** (`http://localhost:3100`) and **Prometheus** to explore and visualize all metrics and logs on unified dashboards!

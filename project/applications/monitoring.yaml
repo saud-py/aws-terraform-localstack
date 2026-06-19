@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://prometheus-community.github.io/helm-charts'
+    chart: kube-prometheus-stack
+    targetRevision: 62.7.0 # Stable chart version
+    helm:
+      values: |
+        grafana:
+          adminPassword: "admin"
+          grafana.ini:
+            server:
+              domain: localhost
+              root_url: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+              serve_from_sub_path: true
+          ingress:
+            enabled: true
+            ingressClassName: "nginx"
+            hosts:
+              - localhost
+            path: /grafana/?(.*)
+            pathType: ImplementationSpecific
+            annotations:
+              nginx.ingress.kubernetes.io/rewrite-target: /$1
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

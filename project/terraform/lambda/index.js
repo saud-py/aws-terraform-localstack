@@ -70,6 +70,30 @@ exports.handler = async (event) => {
       await dynamo.send(new UpdateItemCommand(updateParams));
       console.log(`Successfully completed post-processing for Order ${orderId}`);
 
+      // 3. Update transaction status in DynamoDB to SUCCESS
+      const txTableName = "dev-ecommerce-transactions";
+      const txId = "tx_" + orderId;
+      console.log(`Updating DynamoDB Transaction ${txId} status to SUCCESS`);
+      
+      const updateTxParams = {
+        TableName: txTableName,
+        Key: {
+          transaction_id: { S: txId }
+        },
+        UpdateExpression: "SET #status = :status, #updatedAt = :updatedAt",
+        ExpressionAttributeNames: {
+          "#status": "status",
+          "#updatedAt": "updatedAt"
+        },
+        ExpressionAttributeValues: {
+          ":status": { S: "SUCCESS" },
+          ":updatedAt": { S: new Date().toISOString() }
+        }
+      };
+
+      await dynamo.send(new UpdateItemCommand(updateTxParams));
+      console.log(`Successfully completed post-processing for Transaction ${txId}`);
+
     } catch (err) {
       console.error("Error processing S3 invoice:", err);
     }
