@@ -233,6 +233,13 @@ spec:
         volumeMounts:
         - name: code-volume
           mountPath: /code
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "200m"
+            memory: "128Mi"
       volumes:
       - name: code-volume
         configMap:
