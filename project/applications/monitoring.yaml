@@ -10,6 +10,7 @@ spec:
     chart: kube-prometheus-stack
     targetRevision: 62.7.0 # Stable chart version
     helm:
+      skipCrds: true
       values: |
         grafana:
           adminPassword: "admin"
