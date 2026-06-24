@@ -157,4 +157,4 @@ We can deploy Grafana and Prometheus directly through ArgoCD:
 3. Log in with the default administrator credentials:
    - **Username**: `admin`
    - **Password**: `admin`
-4. Under **Connections -> Data Sources**, you can add **Loki** (`http://localhost:3100`) and **Prometheus** to explore and visualize all metrics and logs on unified dashboards!
+4. Under **Connections -> Data Sources**, you can add **Loki** (`http://loki:3100`) and **Prometheus** to explore and visualize all metrics and logs on unified dashboards!
