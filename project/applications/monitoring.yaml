@@ -23,10 +23,9 @@ spec:
             ingressClassName: "nginx"
             hosts:
               - localhost
-            path: /grafana/?(.*)
-            pathType: ImplementationSpecific
-            annotations:
-              nginx.ingress.kubernetes.io/rewrite-target: /$1
+            path: /grafana
+            pathType: Prefix
+            annotations: {}
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default
@@ -36,3 +35,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
