@@ -58,6 +58,20 @@ git push origin basics-using-localstack
 
 ---
 
+### Step 4: Access URLs & Dashboards
+Ensure that `minikube tunnel` is running in a background terminal. You can then access the main applications and operational consoles at the following URLs:
+
+* **E-Commerce Web Board (Frontend)**: [http://localhost/](http://localhost/)
+* **Grafana Dashboard**: [http://localhost/grafana/](http://localhost/grafana/)
+  * *Credentials:* Username `admin` / Password `admin`
+* **ArgoCD Web Console**: Access by running port-forwarding:
+  ```bash
+  kubectl port-forward svc/argocd-server -n argocd 8080:443
+  ```
+  Then open [https://localhost:8080/](https://localhost:8080/)
+
+---
+
 ## 3. Operations & Verification
 
 ### Step 1: Place an Order
@@ -143,4 +157,4 @@ We can deploy Grafana and Prometheus directly through ArgoCD:
 3. Log in with the default administrator credentials:
    - **Username**: `admin`
    - **Password**: `admin`
-4. Under **Connections -> Data Sources**, you can add **Loki** (`http://localhost:3100`) and **Prometheus** to explore and visualize all metrics and logs on unified dashboards!
+4. Under **Connections -> Data Sources**, you can add **Loki** (`http://loki:3100`) and **Prometheus** to explore and visualize all metrics and logs on unified dashboards!
