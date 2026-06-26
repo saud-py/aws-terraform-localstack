@@ -56,6 +56,12 @@ To log in to the web panels, use the following credentials:
 * **Admin Console (`/admin`)**:
   * Username: `admin`
   * Password: `admin123`
+* **ArgoCD Console (`argocd.localhost`)**:
+  * Username: `admin`
+  * Password: Retrieve the auto-generated initial password from the cluster:
+    ```bash
+    kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+    ```
 
 ---
 
