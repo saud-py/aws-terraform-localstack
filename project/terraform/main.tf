@@ -273,7 +273,64 @@ resource "aws_dynamodb_table" "inventory" {
   }
 }
 
-# 12. SNS Alerting Topic for CPU/Memory Spikes
+# Seeding Product Inventory with Image URLs
+resource "aws_dynamodb_table_item" "seed_prod_1" {
+  table_name = aws_dynamodb_table.inventory.name
+  hash_key   = aws_dynamodb_table.inventory.hash_key
+
+  item = jsonencode({
+    product_id = { S = "prod_1" }
+    name       = { S = "Cloud Architecture Book" }
+    price      = { N = "29.99" }
+    stock      = { N = "50" }
+    image      = { S = "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=300&q=80" }
+  })
+}
+
+resource "aws_dynamodb_table_item" "seed_prod_2" {
+  table_name = aws_dynamodb_table.inventory.name
+  hash_key   = aws_dynamodb_table.inventory.hash_key
+
+  item = jsonencode({
+    product_id = { S = "prod_2" }
+    name       = { S = "LocalStack Pro License" }
+    price      = { N = "99.00" }
+    stock      = { N = "10" }
+    image      = { S = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80" }
+  })
+}
+
+resource "aws_dynamodb_table_item" "seed_prod_3" {
+  table_name = aws_dynamodb_table.inventory.name
+  hash_key   = aws_dynamodb_table.inventory.hash_key
+
+  item = jsonencode({
+    product_id = { S = "prod_3" }
+    name       = { S = "Kubernetes Mastery Course" }
+    price      = { N = "149.50" }
+    stock      = { N = "5" }
+    image      = { S = "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=300&q=80" }
+  })
+}
+
+# 12. DynamoDB Table for Payments
+resource "aws_dynamodb_table" "payments" {
+  name         = "dev-ecommerce-payments"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "payment_id"
+
+  attribute {
+    name = "payment_id"
+    type = "S"
+  }
+
+  tags = {
+    Environment = "dev"
+    Project     = "ECommercePlatform"
+  }
+}
+
+# 13. SNS Alerting Topic for CPU/Memory Spikes
 resource "aws_sns_topic" "system_alerts" {
   name = "dev-system-alerts-topic"
 }
@@ -284,7 +341,7 @@ resource "aws_sns_topic_subscription" "email_alerts" {
   endpoint  = "saud.ali@kissht.com"
 }
 
-# 13. AWS Secrets Manager
+# 14. AWS Secrets Manager
 resource "aws_secretsmanager_secret" "ecommerce_secrets" {
   name                    = "dev-ecommerce-secrets"
   recovery_window_in_days = 0
@@ -296,6 +353,7 @@ resource "aws_secretsmanager_secret_version" "ecommerce_secrets_val" {
     ORDERS_TABLE        = "dev-ecommerce-orders"
     TRANSACTIONS_TABLE  = "dev-ecommerce-transactions"
     INVENTORY_TABLE     = "dev-ecommerce-inventory"
+    PAYMENTS_TABLE      = "dev-ecommerce-payments"
     INVOICES_BUCKET     = "dev-ecommerce-invoices"
     ORDER_EVENTS_TOPIC  = aws_sns_topic.order_events.arn
     SYSTEM_ALERTS_TOPIC = aws_sns_topic.system_alerts.arn

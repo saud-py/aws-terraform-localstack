@@ -7,3 +7,7 @@ data:
 {{ .Files.Get "src/api.js" | indent 4 }}
   worker.js: |
 {{ .Files.Get "src/worker.js" | indent 4 }}
+  auth.js: |
+{{ .Files.Get "src/auth.js" | indent 4 }}
+  payment.js: |
+{{ .Files.Get "src/payment.js" | indent 4 }}
