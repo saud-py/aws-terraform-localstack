@@ -64,11 +64,7 @@ To log in to the web panels, use the following credentials:
 * **Customer Storefront**: [http://localhost/](http://localhost/)
 * **Admin Console**: [http://localhost/admin](http://localhost/admin)
 * **Grafana Dashboards**: [http://localhost/grafana/](http://localhost/grafana/) (Ingress routed)
-* **ArgoCD Web Console**: Accessible via port-forwarding:
-  ```bash
-  kubectl port-forward svc/argocd-server -n argocd 8080:443
-  ```
-  Then browse: [https://localhost:8080/](https://localhost:8080/)
+* **ArgoCD Web Console**: Accessible directly without port-forwarding: [http://argocd.localhost/](http://argocd.localhost/) (Note: Browsers automatically resolve `.localhost` subdomains to `127.0.0.1` locally, so no `/etc/hosts` changes are required).
 
 ---
 
