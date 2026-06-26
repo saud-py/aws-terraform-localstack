@@ -255,3 +255,52 @@ resource "aws_api_gateway_stage" "stage" {
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
   stage_name    = "dev"
 }
+
+# 11. DynamoDB Table for Product Inventory
+resource "aws_dynamodb_table" "inventory" {
+  name         = "dev-ecommerce-inventory"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "product_id"
+
+  attribute {
+    name = "product_id"
+    type = "S"
+  }
+
+  tags = {
+    Environment = "dev"
+    Project     = "ECommercePlatform"
+  }
+}
+
+# 12. SNS Alerting Topic for CPU/Memory Spikes
+resource "aws_sns_topic" "system_alerts" {
+  name = "dev-system-alerts-topic"
+}
+
+resource "aws_sns_topic_subscription" "email_alerts" {
+  topic_arn = aws_sns_topic.system_alerts.arn
+  protocol  = "email"
+  endpoint  = "saud.ali@kissht.com"
+}
+
+# 13. AWS Secrets Manager
+resource "aws_secretsmanager_secret" "ecommerce_secrets" {
+  name                    = "dev-ecommerce-secrets"
+  recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret_version" "ecommerce_secrets_val" {
+  secret_id     = aws_secretsmanager_secret.ecommerce_secrets.id
+  secret_string = jsonencode({
+    ORDERS_TABLE        = "dev-ecommerce-orders"
+    TRANSACTIONS_TABLE  = "dev-ecommerce-transactions"
+    INVENTORY_TABLE     = "dev-ecommerce-inventory"
+    INVOICES_BUCKET     = "dev-ecommerce-invoices"
+    ORDER_EVENTS_TOPIC  = aws_sns_topic.order_events.arn
+    SYSTEM_ALERTS_TOPIC = aws_sns_topic.system_alerts.arn
+    API_PORT            = "3000"
+    ALERT_EMAIL         = "saud.ali@kissht.com"
+    PROCESS_ORDER_QUEUE = aws_sqs_queue.process_order.id
+  })
+}

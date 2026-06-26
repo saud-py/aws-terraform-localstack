@@ -32,11 +32,13 @@ spec:
         - -c
         - |
           mkdir -p /app && cp /code/api.js /app/api.js && cd /app
-          npm install express @aws-sdk/client-dynamodb @aws-sdk/client-sns
+          npm install express @aws-sdk/client-dynamodb @aws-sdk/client-sns @aws-sdk/client-secrets-manager
           node api.js
         ports:
         - containerPort: 3000
         env:
+        - name: SECRETS_NAME
+          value: "dev-ecommerce-secrets"
         - name: AWS_ENDPOINT
           value: {{ .Values.environment.awsEndpoint | quote }}
         - name: AWS_REGION
@@ -86,9 +88,11 @@ spec:
         - -c
         - |
           mkdir -p /app && cp /code/worker.js /app/worker.js && cd /app
-          npm install @aws-sdk/client-sqs @aws-sdk/client-s3 @aws-sdk/client-dynamodb
+          npm install @aws-sdk/client-sqs @aws-sdk/client-s3 @aws-sdk/client-dynamodb @aws-sdk/client-secrets-manager
           node worker.js
         env:
+        - name: SECRETS_NAME
+          value: "dev-ecommerce-secrets"
         - name: AWS_ENDPOINT
           value: {{ .Values.environment.awsEndpoint | quote }}
         - name: AWS_REGION

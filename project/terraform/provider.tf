@@ -33,5 +33,6 @@ provider "aws" {
     logs           = "http://localhost:4566"
     apigateway     = "http://localhost:4566"
     apigatewayv2   = "http://localhost:4566"
+    secretsmanager = "http://localhost:4566"
   }
 }
