@@ -11,6 +11,10 @@ spec:
   {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className | quote }}
   {{- end }}
+  tls:
+  - hosts:
+    - localhost
+    secretName: ecommerce-tls-secret
   rules:
     {{- range .Values.ingress.hosts }}
     - {{ if .host }}host: {{ .host | quote }}{{ end }}
