@@ -1,19 +1,32 @@
-# LocalStack files
-.localstack/
+# ── Terraform ─────────────────────────────
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.backup
+**/.terraform.lock.hcl
+**/lambda_function.zip
+**/terraform-provider-*
 
-# Terraform files
-**/.terraform/*
-*.tfstate
-*.tfstate.*
-crash.log
-crash.*.log
+# ── Secrets / TLS ─────────────────────────
+*.pem
+*.key
+*.crt
+tls.crt
+tls.key
 
-# Override files
-*.tfvars
-*.tfvars.json
-*.override.tf
-*.override.tf.json
+# ── Node / npm ────────────────────────────
+node_modules/
+npm-debug.log*
 
-# Ignore CLI configuration files
-.terraformrc
-terraform.rc
+# ── macOS ─────────────────────────────────
+.DS_Store
+.AppleDouble
+__MACOSX/
+
+# ── IDE ───────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Logs ──────────────────────────────────
+*.log

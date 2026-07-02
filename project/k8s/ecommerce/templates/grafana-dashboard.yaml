@@ -1,0 +1,136 @@
+{{- /*
+  Grafana Dashboard ConfigMap — Saud's Store E-Commerce Platform.
+  Dashboard JSON uses Grafana variable syntax. Helm {{ }} are escaped where needed.
+*/ -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sauds-ecommerce-grafana-dashboard
+  namespace: default
+  labels:
+    grafana_dashboard: "1"
+data:
+  ecommerce-platform.json: |-
+    {
+      "description": "Saud's Store — E-Commerce Platform Monitoring (Pods, Nodes, Services)",
+      "editable": true,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [],
+      "panels": [
+        { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }, "id": 100, "title": "Platform Overview", "type": "row" },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "yellow", "value": 1 }, { "color": "green", "value": 2 }] }, "unit": "short" } },
+          "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 }, "id": 1,
+          "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "reduceOptions": { "calcs": ["lastNotNull"] }, "textMode": "auto" },
+          "title": "Running Pods", "type": "stat",
+          "targets": [{ "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "count(kube_pod_status_phase{namespace=\"default\",phase=\"Running\"})", "legendFormat": "Running Pods", "refId": "A" }]
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 75 }, { "color": "red", "value": 90 }] }, "unit": "percent", "min": 0, "max": 100 } },
+          "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 }, "id": 2,
+          "options": { "colorMode": "background", "graphMode": "area", "justifyMode": "center", "reduceOptions": { "calcs": ["lastNotNull"] } },
+          "title": "Node CPU %", "type": "stat",
+          "targets": [{ "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)", "legendFormat": "CPU %", "refId": "A" }]
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 85 }] }, "unit": "percent", "min": 0, "max": 100 } },
+          "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 }, "id": 3,
+          "options": { "colorMode": "background", "graphMode": "area", "justifyMode": "center", "reduceOptions": { "calcs": ["lastNotNull"] } },
+          "title": "Node Memory %", "type": "stat",
+          "targets": [{ "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))", "legendFormat": "Memory %", "refId": "A" }]
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }, "unit": "short" } },
+          "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 }, "id": 4,
+          "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "center", "reduceOptions": { "calcs": ["lastNotNull"] } },
+          "title": "Pods Not Running", "type": "stat",
+          "targets": [{ "expr": "count(kube_pod_status_phase{namespace=\"default\",phase!=\"Running\",phase!=\"Succeeded\"}) or vector(0)", "legendFormat": "Not Running", "refId": "A" }]
+        },
+        { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 }, "id": 101, "title": "Microservice CPU & Memory", "type": "row" },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 15 }, "unit": "percentunit" } },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 }, "id": 5,
+          "options": { "tooltip": { "mode": "multi" }, "legend": { "calcs": ["mean", "max"], "displayMode": "table" } },
+          "title": "CPU by Pod (default ns)", "type": "timeseries",
+          "targets": [{ "expr": "rate(container_cpu_usage_seconds_total{namespace=\"default\",container!=\"\",container!=\"POD\"}[5m])", "legendFormat": "{{ `{{pod}}` }} / {{ `{{container}}` }}", "refId": "A" }]
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 15 }, "unit": "bytes" } },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 }, "id": 6,
+          "options": { "tooltip": { "mode": "multi" }, "legend": { "calcs": ["mean", "max"], "displayMode": "table" } },
+          "title": "Memory by Pod (default ns)", "type": "timeseries",
+          "targets": [{ "expr": "container_memory_working_set_bytes{namespace=\"default\",container!=\"\",container!=\"POD\"}", "legendFormat": "{{ `{{pod}}` }} / {{ `{{container}}` }}", "refId": "A" }]
+        },
+        { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 }, "id": 102, "title": "Network I/O", "type": "row" },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 10 }, "unit": "Bps" } },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 }, "id": 7,
+          "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "table" } },
+          "title": "Network Receive (ecommerce pods)", "type": "timeseries",
+          "targets": [{ "expr": "rate(container_network_receive_bytes_total{namespace=\"default\",pod=~\"ecommerce.*\"}[5m])", "legendFormat": "RX {{ `{{pod}}` }}", "refId": "A" }]
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 10 }, "unit": "Bps" } },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 }, "id": 8,
+          "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "table" } },
+          "title": "Network Transmit (ecommerce pods)", "type": "timeseries",
+          "targets": [{ "expr": "rate(container_network_transmit_bytes_total{namespace=\"default\",pod=~\"ecommerce.*\"}[5m])", "legendFormat": "TX {{ `{{pod}}` }}", "refId": "A" }]
+        },
+        { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 }, "id": 103, "title": "Deployments & HPA", "type": "row" },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 8 }, "unit": "short" } },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 }, "id": 9,
+          "options": { "tooltip": { "mode": "multi" }, "legend": { "calcs": ["last"], "displayMode": "table" } },
+          "title": "Available Replicas per Deployment", "type": "timeseries",
+          "targets": [{ "expr": "kube_deployment_status_replicas_available{namespace=\"default\"}", "legendFormat": "{{ `{{deployment}}` }}", "refId": "A" }]
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "bars", "lineWidth": 1, "fillOpacity": 80 }, "unit": "short" } },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 }, "id": 10,
+          "options": { "tooltip": { "mode": "multi" }, "legend": { "calcs": ["lastNotNull"], "displayMode": "table" } },
+          "title": "HPA Current / Max Replicas", "type": "timeseries",
+          "targets": [
+            { "expr": "kube_horizontalpodautoscaler_status_current_replicas{namespace=\"default\"}", "legendFormat": "Current: {{ `{{horizontalpodautoscaler}}` }}", "refId": "A" },
+            { "expr": "kube_horizontalpodautoscaler_spec_max_replicas{namespace=\"default\"}", "legendFormat": "Max: {{ `{{horizontalpodautoscaler}}` }}", "refId": "B" }
+          ]
+        },
+        { "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 32 }, "id": 104, "title": "Restarts & Uptime", "type": "row" },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 15 }, "unit": "short" } },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 33 }, "id": 11,
+          "options": { "tooltip": { "mode": "multi" }, "legend": { "calcs": ["sum"], "displayMode": "table" } },
+          "title": "Container Restarts (last 1h)", "type": "timeseries",
+          "targets": [{ "expr": "increase(kube_pod_container_status_restarts_total{namespace=\"default\"}[1h])", "legendFormat": "{{ `{{pod}}` }}: {{ `{{container}}` }}", "refId": "A" }]
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 10 }, "unit": "s" } },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 33 }, "id": 12,
+          "options": { "tooltip": { "mode": "multi" }, "legend": { "calcs": ["last"], "displayMode": "table" } },
+          "title": "Node Uptime", "type": "timeseries",
+          "targets": [{ "expr": "time() - node_boot_time_seconds", "legendFormat": "Uptime ({{ `{{instance}}` }})", "refId": "A" }]
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 37,
+      "style": "dark",
+      "tags": ["ecommerce", "kubernetes", "sauds-store"],
+      "time": { "from": "now-1h", "to": "now" },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Saud's Store — Platform Metrics",
+      "uid": "sauds-ecommerce-v2",
+      "version": 2
+    }

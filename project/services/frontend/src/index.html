@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Anon Store — Premium E-Commerce</title>
-  <meta name="description" content="Shop the latest electronics, fashion, footwear and more at the best prices. Fast delivery, secure payments.">
+  <title>Saud's Store — Premium E-Commerce</title>
+  <meta name="description" content="Shop the latest electronics, fashion, footwear and more at the best prices. Fast delivery, secure payments — Saud's Store.">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -13,7 +13,7 @@
 <!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
 <header>
   <div class="header-inner">
-    <a class="logo" href="/"><span>Anon</span>Store</a>
+    <a class="logo" href="/"><span>Saud's</span> Store</a>
     <div class="search-bar">
       <button><i class="fas fa-search"></i></button>
       <input type="text" id="search-input" placeholder="Search products, brands, categories…" oninput="filterProducts()">
@@ -46,32 +46,74 @@
   </div>
 </nav>
 
-<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<!-- ═══════════════════════════════ HERO BANNER ═══════════════════════════════ -->
 <section class="hero" id="hero">
-  <div class="hero-image-col">
-    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80" alt="Store Hero">
-  </div>
-  <div class="container">
-    <div class="hero-content">
-      <div class="hero-badge">🔥 Summer Sale — Up to 50% Off</div>
-      <h1>Discover <span>Premium</span> Products at Amazing Prices</h1>
-      <p>Shop thousands of top-quality products across Electronics, Fashion, Footwear, and more — all powered by a cloud-native platform.</p>
-      <div class="hero-actions">
-        <button class="btn btn-primary" onclick="scrollToSection('products')">
-          <i class="fas fa-shopping-bag"></i> Shop Now
-        </button>
-        <button class="btn btn-outline" style="border-color:rgba(255,255,255,0.4); color:#fff;" onclick="scrollToSection('categories')">
-          Browse Categories
-        </button>
+  <div class="hero-slider" id="hero-slider">
+    <div class="hero-slide active">
+      <img src="https://raw.githubusercontent.com/codewithsadee/anon-ecommerce-website/master/assets/images/banner-1.jpg" alt="Banner 1">
+      <div class="hero-slide-content">
+        <div class="hero-badge">🔥 New Arrivals</div>
+        <h1>Trending <span>Men's</span> Fashion</h1>
+        <p>Discover the latest styles in menswear. Premium quality, unbeatable prices.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="filterByCategory('Clothing')">
+            <i class="fas fa-shopping-bag"></i> Shop Now
+          </button>
+          <button class="btn btn-outline" style="border-color:rgba(255,255,255,0.45);color:#fff;" onclick="scrollToSection('categories')">
+            Explore All
+          </button>
+        </div>
       </div>
-      <div class="hero-stats">
-        <div class="stat"><strong>50K+</strong><span>Products</span></div>
-        <div class="stat"><strong>12K+</strong><span>Customers</span></div>
-        <div class="stat"><strong>4.8★</strong><span>Rating</span></div>
+    </div>
+    <div class="hero-slide">
+      <img src="https://raw.githubusercontent.com/codewithsadee/anon-ecommerce-website/master/assets/images/banner-2.jpg" alt="Banner 2">
+      <div class="hero-slide-content">
+        <div class="hero-badge">💎 Best Sellers</div>
+        <h1>Women's <span>Collection</span></h1>
+        <p>Elegant styles for every occasion. Shop our curated women's collection.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="filterByCategory('Clothing')">
+            <i class="fas fa-heart"></i> Shop Women's
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-slide">
+      <img src="https://raw.githubusercontent.com/codewithsadee/anon-ecommerce-website/master/assets/images/banner-3.jpg" alt="Banner 3">
+      <div class="hero-slide-content">
+        <div class="hero-badge">⚡ Flash Sale — 50% Off</div>
+        <h1>Top <span>Electronics</span></h1>
+        <p>Latest tech at the best prices. Laptops, phones, and accessories.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="filterByCategory('Electronics')">
+            <i class="fas fa-bolt"></i> Shop Electronics
+          </button>
+        </div>
       </div>
     </div>
   </div>
+  <div class="hero-controls">
+    <button class="hero-prev" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
+    <div class="hero-dots" id="hero-dots">
+      <span class="dot active" onclick="goToSlide(0)"></span>
+      <span class="dot" onclick="goToSlide(1)"></span>
+      <span class="dot" onclick="goToSlide(2)"></span>
+    </div>
+    <button class="hero-next" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></button>
+  </div>
 </section>
+
+<!-- ═══════════════════════════════ FEATURE STRIP ═══════════════════════════════ -->
+<div class="feature-strip">
+  <div class="container">
+    <div class="feature-strip-grid">
+      <div class="feature-strip-item"><i class="fas fa-shipping-fast"></i><span>Free Delivery over $50</span></div>
+      <div class="feature-strip-item"><i class="fas fa-undo-alt"></i><span>Easy 30-Day Returns</span></div>
+      <div class="feature-strip-item"><i class="fas fa-lock"></i><span>Secure Payments</span></div>
+      <div class="feature-strip-item"><i class="fas fa-headset"></i><span>24/7 Support</span></div>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════ CATEGORIES ═══════════════════════════════ -->
 <section class="categories" id="categories">
@@ -83,39 +125,46 @@
       </div>
     </div>
     <div class="category-grid">
+      <div class="category-card wide" onclick="filterByCategory('Clothing')">
+        <img src="https://raw.githubusercontent.com/codewithsadee/anon-ecommerce-website/master/assets/images/mens-banner.jpg" alt="Men's Fashion">
+        <div class="category-overlay">
+          <div class="category-name">Men's Fashion</div>
+          <div class="category-count">Latest Trends</div>
+        </div>
+      </div>
+      <div class="category-card" onclick="filterByCategory('Clothing')">
+        <img src="https://raw.githubusercontent.com/codewithsadee/anon-ecommerce-website/master/assets/images/womens-banner.jpg" alt="Women's Fashion">
+        <div class="category-overlay">
+          <div class="category-name">Women's Fashion</div>
+          <div class="category-count">Elegant Styles</div>
+        </div>
+      </div>
       <div class="category-card" onclick="filterByCategory('Electronics')">
-        <img src="https://images.unsplash.com/photo-1593344484962-796055d4a3a4?auto=format&fit=crop&w=400&q=80" alt="Electronics">
+        <img src="https://raw.githubusercontent.com/codewithsadee/anon-ecommerce-website/master/assets/images/electronics-banner-1.jpg" alt="Electronics">
         <div class="category-overlay">
           <div class="category-name">Electronics</div>
           <div class="category-count">Laptops, Phones & More</div>
         </div>
       </div>
-      <div class="category-card" onclick="filterByCategory('Clothing')">
-        <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=400&q=80" alt="Clothing">
+      <div class="category-card" onclick="filterByCategory('Electronics')">
+        <img src="https://raw.githubusercontent.com/codewithsadee/anon-ecommerce-website/master/assets/images/electronics-banner-2.jpg" alt="Gadgets">
         <div class="category-overlay">
-          <div class="category-name">Clothing</div>
-          <div class="category-count">Shirts, Jackets & More</div>
+          <div class="category-name">Gadgets & Accessories</div>
+          <div class="category-count">Smart Tech Deals</div>
         </div>
       </div>
       <div class="category-card" onclick="filterByCategory('Footwear')">
         <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80" alt="Footwear">
         <div class="category-overlay">
           <div class="category-name">Footwear</div>
-          <div class="category-count">Sneakers, Boots & More</div>
+          <div class="category-count">Sneakers & Boots</div>
         </div>
       </div>
       <div class="category-card" onclick="filterByCategory('Watches')">
         <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80" alt="Watches">
         <div class="category-overlay">
           <div class="category-name">Watches</div>
-          <div class="category-count">Luxury & Smart Watches</div>
-        </div>
-      </div>
-      <div class="category-card" onclick="filterByCategory('Accessories')">
-        <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=400&q=80" alt="Accessories">
-        <div class="category-overlay">
-          <div class="category-name">Accessories</div>
-          <div class="category-count">Bags, Sunglasses & More</div>
+          <div class="category-count">Luxury & Smart</div>
         </div>
       </div>
     </div>
@@ -139,54 +188,45 @@
       </div>
     </div>
     <div class="products-grid" id="products-grid">
-      <!-- skeleton placeholders -->
-      <div class="skeleton" style="height:320px; border-radius:12px;"></div>
-      <div class="skeleton" style="height:320px; border-radius:12px;"></div>
-      <div class="skeleton" style="height:320px; border-radius:12px;"></div>
-      <div class="skeleton" style="height:320px; border-radius:12px;"></div>
+      <div class="skeleton" style="height:320px;border-radius:12px;"></div>
+      <div class="skeleton" style="height:320px;border-radius:12px;"></div>
+      <div class="skeleton" style="height:320px;border-radius:12px;"></div>
+      <div class="skeleton" style="height:320px;border-radius:12px;"></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════ PROMO BANNER ═══════════════════════════════ -->
-<section class="promo-banner">
-  <div class="container">
-    <h2>🎉 Flash Sale — Ends in:</h2>
-    <p>Get the best deals before time runs out!</p>
-    <div class="countdown">
-      <div class="countdown-block"><strong id="cd-h">08</strong><span>Hours</span></div>
-      <div class="countdown-block"><strong id="cd-m">34</strong><span>Minutes</span></div>
-      <div class="countdown-block"><strong id="cd-s">59</strong><span>Seconds</span></div>
+<!-- ═══════════════════════════════ CTA BANNER ═══════════════════════════════ -->
+<section class="cta-banner">
+  <img class="cta-bg" src="https://raw.githubusercontent.com/codewithsadee/anon-ecommerce-website/master/assets/images/cta-banner.jpg" alt="CTA Banner">
+  <div class="cta-overlay">
+    <div class="container">
+      <h2>Everyday Fresh & Clean with Our Products</h2>
+      <p>Shop thousands of top-quality products across all categories — delivered to your door</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:2rem;">
+        <strong id="cd-h" class="cd-num">08</strong><span class="cd-sep">:</span>
+        <strong id="cd-m" class="cd-num">34</strong><span class="cd-sep">:</span>
+        <strong id="cd-s" class="cd-num">59</strong>
+      </div>
+      <button class="btn btn-primary" style="font-size:1rem;padding:0.875rem 2.5rem;" onclick="scrollToSection('products')">
+        <i class="fas fa-bolt"></i> Shop Now
+      </button>
     </div>
-    <button class="btn btn-dark" onclick="scrollToSection('products')">
-      <i class="fas fa-bolt"></i> Grab the Deals
-    </button>
   </div>
 </section>
 
-<!-- ═══════════════════════════════ FEATURES ═══════════════════════════════ -->
-<section class="features">
+<!-- ═══════════════════════════════ NEWSLETTER ═══════════════════════════════ -->
+<section class="newsletter-section">
   <div class="container">
-    <div class="features-grid">
-      <div class="feature-item">
-        <div class="feature-icon"><i class="fas fa-shipping-fast"></i></div>
-        <h4>Free Shipping</h4>
-        <p>On all orders over $50. Delivered in 2–5 business days.</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon"><i class="fas fa-undo-alt"></i></div>
-        <h4>Easy Returns</h4>
-        <p>30-day hassle-free return policy on all products.</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon"><i class="fas fa-lock"></i></div>
-        <h4>Secure Payments</h4>
-        <p>Your payment info is always encrypted and safe.</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon"><i class="fas fa-headset"></i></div>
-        <h4>24/7 Support</h4>
-        <p>Our team is here around the clock to help you.</p>
+    <div class="newsletter-inner">
+      <img src="https://raw.githubusercontent.com/codewithsadee/anon-ecommerce-website/master/assets/images/newsletter.png" alt="Newsletter" class="newsletter-img">
+      <div class="newsletter-content">
+        <h3>Subscribe to our Newsletter</h3>
+        <p>Get the latest deals, trends, and product launches delivered straight to your inbox.</p>
+        <div class="newsletter-form-wrap">
+          <input type="email" placeholder="Enter your email address…" class="newsletter-input">
+          <button class="btn btn-primary"><i class="fas fa-paper-plane"></i> Subscribe</button>
+        </div>
       </div>
     </div>
   </div>
@@ -197,7 +237,7 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a class="logo" href="/"><span style="color:var(--primary)">Anon</span>Store</a>
+        <a class="logo" href="/"><span style="color:var(--primary)">Saud's</span> Store</a>
         <p>Your one-stop cloud-native shopping destination, powered by AWS LocalStack and Kubernetes.</p>
         <div class="socials">
           <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
@@ -225,16 +265,12 @@
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Newsletter</h4>
-        <p style="font-size:0.85rem; opacity:0.7; margin-bottom:12px;">Get deals delivered to your inbox</p>
-        <div class="newsletter-form">
-          <input type="email" placeholder="your@email.com">
-          <button type="button"><i class="fas fa-paper-plane"></i></button>
-        </div>
+        <h4>Payment Methods</h4>
+        <img src="https://raw.githubusercontent.com/codewithsadee/anon-ecommerce-website/master/assets/images/payment.png" alt="Payment Methods" style="max-width:200px;margin-top:10px;filter:brightness(0.8);">
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2024 AnonStore. All rights reserved. Built on AWS LocalStack + Kubernetes.</p>
+      <p>© 2024 Saud's Store. All rights reserved. Built on AWS LocalStack + Kubernetes.</p>
       <p style="display:flex;gap:16px;"><a href="#" style="font-size:0.8rem;opacity:0.5;">Privacy Policy</a><a href="#" style="font-size:0.8rem;opacity:0.5;">Terms of Service</a></p>
     </div>
   </div>
@@ -271,9 +307,9 @@
     <div class="modal-header">
       <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
       <h2>Welcome Back</h2>
-      <p>Sign in to your account to continue shopping</p>
+      <p>Sign in to your Saud's Store account to continue shopping</p>
     </div>
-    <div id="login-error" class="form-error show" style="background:var(--primary-light);padding:10px;border-radius:8px;display:none;"></div>
+    <div id="login-error" style="background:var(--primary-light);padding:10px;border-radius:8px;color:var(--primary);font-size:0.82rem;margin-bottom:12px;display:none;"></div>
     <div class="form-group">
       <label>Username</label>
       <input type="text" id="modal-username" value="user" placeholder="Enter your username">
@@ -301,15 +337,15 @@
     </div>
     <div class="checkout-summary" id="checkout-summary"></div>
     <div id="checkout-status" style="margin:16px 0;display:none;"></div>
-    <div id="checkout-result" style="display:none; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:8px; padding:16px; margin-bottom:16px;">
-      <div style="font-weight:700; color:#16a34a; margin-bottom:6px;"><i class="fas fa-check-circle"></i> Order Placed Successfully!</div>
-      <div id="checkout-result-text" style="font-size:0.82rem; color:#15803d;"></div>
+    <div id="checkout-result" style="display:none;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;padding:16px;margin-bottom:16px;">
+      <div style="font-weight:700;color:#16a34a;margin-bottom:6px;"><i class="fas fa-check-circle"></i> Order Placed Successfully!</div>
+      <div id="checkout-result-text" style="font-size:0.82rem;color:#15803d;"></div>
     </div>
-    <div id="checkout-error" style="display:none; background:#fef2f2; border:1.5px solid #fca5a5; border-radius:8px; padding:12px; margin-bottom:16px; font-size:0.85rem; color:#dc2626;"></div>
+    <div id="checkout-error" style="display:none;background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:12px;margin-bottom:16px;font-size:0.85rem;color:#dc2626;"></div>
     <button id="place-order-btn" class="checkout-btn" style="border-radius:8px;" onclick="placeOrder()">
       <i class="fas fa-lock"></i> Place Order & Pay
     </button>
-    <p style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-top:12px;"><i class="fas fa-shield-alt"></i> Secured by LocalStack Payments</p>
+    <p style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-top:12px;"><i class="fas fa-shield-alt"></i> Secured by Saud's Store Payments</p>
   </div>
 </div>
 

@@ -1,5 +1,5 @@
 // =============================================
-//   AnonStore — Storefront Application Logic
+//   Saud's Store — Storefront Application Logic
 // =============================================
 
 'use strict';
@@ -13,6 +13,8 @@ let sessionUser = localStorage.getItem('user_username');
 let activeFilter = 'All';
 let cartOpen = false;
 let checkoutCartItems = [];
+let currentSlide = 0;
+let slideInterval;
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,7 +22,32 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchProducts();
   renderCart();
   startCountdown();
+  startSlider();
 });
+
+// ── Hero Slider ──
+function startSlider() {
+  slideInterval = setInterval(nextSlide, 4500);
+}
+
+function goToSlide(n) {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.dot');
+  if (!slides.length) return;
+  slides[currentSlide].classList.remove('active');
+  if (dots[currentSlide]) dots[currentSlide].classList.remove('active');
+  currentSlide = (n + slides.length) % slides.length;
+  slides[currentSlide].classList.add('active');
+  if (dots[currentSlide]) dots[currentSlide].classList.add('active');
+}
+
+function nextSlide() { goToSlide(currentSlide + 1); }
+function prevSlide() {
+  clearInterval(slideInterval);
+  goToSlide(currentSlide - 1);
+  slideInterval = setInterval(nextSlide, 4500);
+}
+
 
 // ── Auth ──
 function updateUserUI() {

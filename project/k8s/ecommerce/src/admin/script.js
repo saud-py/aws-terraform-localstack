@@ -1,5 +1,5 @@
 // =============================================
-//   AnonStore Admin — Dashboard Logic
+//   Saud's Store Admin — Dashboard Logic
 // =============================================
 
 'use strict';
