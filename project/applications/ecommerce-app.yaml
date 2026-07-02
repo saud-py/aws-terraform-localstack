@@ -9,7 +9,7 @@ spec:
     # IMPORTANT: Update this to point to your actual Git repository URL (e.g. GitHub fork)
     repoURL: 'https://github.com/saud-py/aws-terraform-localstack.git'
     targetRevision: basics-using-localstack
-    path: project/helm/ecommerce
+    path: project/k8s/ecommerce
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default

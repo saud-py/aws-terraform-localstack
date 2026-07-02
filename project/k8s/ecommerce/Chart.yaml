@@ -1,0 +1,16 @@
+apiVersion: v2
+name: ecommerce
+description: >
+  Cloud-native E-Commerce Platform running on Minikube + LocalStack.
+  Microservices: API, Auth, Payment, Worker, Frontend (Storefront), Admin (Dashboard).
+  Backed by DynamoDB, SQS, SNS, S3, and Secrets Manager via LocalStack.
+type: application
+version: 2.0.0
+appVersion: "2.0.0"
+keywords:
+  - ecommerce
+  - microservices
+  - localstack
+  - kubernetes
+maintainers:
+  - name: Platform Team
